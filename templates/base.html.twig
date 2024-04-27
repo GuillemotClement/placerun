@@ -17,7 +17,9 @@
 	</head>
 	<body class="flex column">
 		{{ include("partials/_header.html.twig") }}
-		{% block body %}{% endblock %}
+		<div class="app-content flex fill justify-center">
+			{% block body %}{% endblock %}
+		</div>
 		{{ include("partials/_footer.html.twig") }}
 	</body>
 </html>
