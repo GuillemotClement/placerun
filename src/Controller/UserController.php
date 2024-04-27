@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\UserRepository;
+use App\Service\RunningTool;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -10,7 +11,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class UserController extends AbstractController
 {
     #[Route('/user', name: 'user_index')]
-    public function index(UserRepository $repoUser): Response
+    public function index(RunningTool $rt): Response
     {
         $users = [
             [
@@ -32,10 +33,12 @@ class UserController extends AbstractController
                 'img' => 'https://randomuser.me/api/portraits/men/81.jpg'
             ]
             ];
-
+        $age = 29;
+        $fcm = $rt->MaxHeartRate($age);
 
         return $this->render('user/index.html.twig',[
-            'users' => $users
+            'users' => $users,
+            'fcm' => $fcm
         ]);
     }
 }
