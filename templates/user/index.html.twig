@@ -15,11 +15,15 @@
         </div>
         <div class="content-user">
             <ul>
-                {# <li>Age : {{ user.age }}</li> #}
-                <li>VMA : {{ user.vma }}</li>
-                {# <li>FCM : {{ user.fcm }}</li> #}
+                <li>Age : {{ user.age }}</li>
+                {# <li>VMA : {{ user.vma }}</li> #}
+                <li>FCM : {{ user.fcm }}</li>
+                
             </ul>
         </div>
+        <a class="btn btn-danger" href="{{ path('user_remove', {id: user.id }) }}">Supprimer</a>
+        <a class="btn btn-success" href="{{ path('user_edit', {id: user.id }) }}">Edit</a>
+        <a class="btn btn-warning" href="{{ path('user_add_vma', {id: user.id }) }}">Edit VMA</a>
     </div>
     {% endfor %}
 </div>

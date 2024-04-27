@@ -1,20 +1,20 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello RaceController!{% endblock %}
+{% block title %}Calendrier des courses{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/Users/clement/Documents/Dev/placerun/src/Controller/RaceController.php</code></li>
-        <li>Your template at <code>/Users/clement/Documents/Dev/placerun/templates/race/index.html.twig</code></li>
-    </ul>
-</div>
+  <div class="content flex column">
+    <h1>Calendrier des courses</h1>
+    <a href="{{ path('race_new')}}">New</a>
+    {% for race in races %}
+      <a class="ctn-race" href="{{ path('race_show', {id: race.id}) }}">
+      <img src="{{ race.picture }}" alt="" class="img-race">
+        <div class="ctn-content">
+          <h2 class="race-title">{{ race.name}}</h2>
+          <p class="race-cara">{{ race.kilometer}} km / {{ race.denivele }}</p>
+          <p class="race-info">- {{race.city }}</p>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
 {% endblock %}

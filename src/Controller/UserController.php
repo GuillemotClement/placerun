@@ -3,11 +3,16 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Vma;
 use App\Form\UserType;
+use App\Form\VmaType;
 use App\Service\RunningTool;
 use Doctrine\ORM\EntityManager;
 use App\Repository\UserRepository;
+use App\Repository\VmaRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\Id;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -15,56 +20,96 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class UserController extends AbstractController
 {
+  // Marche, pas, faudras la faire 
     #[Route('/user', name: 'user_index')]
-    public function index(RunningTool $rt, UserRepository $userRepo): Response
+    public function index(RunningTool $rt, UserRepository $userRepo, VmaRepository $vmaRepo): Response
     {
-        // $users = [
-        //     [
-        //         'name' => 'Julie',
-        //         'email' => 'julie@mail.com',
-        //         'password'=> '123456',
-        //         'vma' => "18",
-        //         'age' => "25",
-        //         'createdAt'=> "17-06-1995",
-        //         'img' => 'https://randomuser.me/api/portraits/women/68.jpg',
-        //         'fcm' => '191'
-        //     ],
-        //     [
-        //         'name' => 'Marc',
-        //         'email' => 'marc@mail.com',
-        //         'password'=> '123456',
-        //         'vma' => "15",
-        //         'age' => "29",
-        //         'createdAt'=> "17-04-1995",
-        //         'img' => 'https://randomuser.me/api/portraits/men/81.jpg',
-        //         'fcm' => '186'
-        //     ]
-        //     ];
-
         $users = $userRepo->findAll();
 
+        foreach ($users as $user)
+        {
+          $vmas = $vmaRepo->findBy(['user' => $user]);
+          foreach($vmas as $vma){
+            $user->addVma($vma);
+          }
+        }
         return $this->render('user/index.html.twig',[
             'users' => $users
         ]);
     }
 
     #[Route('/user/new', name: 'user_new')]
-    public function editUser(Request $request, EntityManagerInterface $em)
+    #[Route('/user/edit/{id}', name: 'user_edit')]
+    public function editUser(Request $request, EntityManagerInterface $em, RunningTool $rt, ?int $id, UserRepository $userRepo)
     {
-        $user = new User();
+        if($id){
+          $user = $userRepo->find($id);
+        } else{
+          $user = new User();
+        }
+
         $formUser = $this->createForm(UserType::class, $user);
+        
         $formUser->handleRequest($request);
 
-        if($formUser->isSubmitted() && $formUser->isValid())
-        {
+        if($formUser->isSubmitted() && $formUser->isValid()){
+          if(!$id){
             $user->setCreatedAt(new \DateTimeImmutable());
+            $user->setFcm($rt->MaxHeartRate($user->getAge()));
             $em->persist($user);
-            $em->flush();
-            return $this->redirectToRoute('user_index');
+          }
+          $em->flush();
+          return $this->redirectToRoute('user_index');
         }
+        // $user = new User();
+        // $formUser = $this->createForm(UserType::class, $user);
+        // $formUser->handleRequest($request);
+
+        // if($formUser->isSubmitted() && $formUser->isValid())
+        // {
+        //     $user->setCreatedAt(new \DateTimeImmutable());
+        //     $user->setFcm($rt->MaxHeartRate($user->getAge()));
+        //     $em->persist($user);
+        //     $em->flush();
+        //     return $this->redirectToRoute('user_index');
+        // }
 
         return $this->render('user/edit.html.twig',[
             'form'=>$formUser->createView()
         ]);
+    }
+
+    #[Route('/user/remove/{id}', name:'user_remove')]
+    public function remove(EntityManagerInterface $em, ?int $id, UserRepository $userRepo)
+    {
+        $user = $userRepo->find($id);
+        $em->remove($user);
+        $em->flush();
+        return $this->redirectToRoute('user_index');
+    }
+
+    #[Route('/user/{id}/addVma', name: 'user_add_vma')]
+    public function addVma(Request $request, UserRepository $userRepo, EntityManagerInterface $em, ?int $id)
+    {
+      $user = $userRepo->find($id);
+      $vma = new Vma();
+      $formVma = $this->createForm(VmaType::class, $vma);
+      $formVma->handleRequest($request);
+
+      if($formVma->isSubmitted() && $formVma->isValid())
+      {
+        
+        $vma->setUser($user);
+        $vma->setPerfDate( new \DateTime());
+
+        $em->persist($vma);
+        $em->flush();
+
+        return $this->redirectToRoute('user_index');
+      }
+
+      return $this->render('user/editVma.html.twig', [
+        'form' => $formVma->createView()
+      ]);
     }
 }
