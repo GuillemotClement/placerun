@@ -6,28 +6,23 @@
 
 <div class="content">
     <h1>Liste des utilisateurs inscrits</h1>
-    <h2>FCM</h2>
-    <p>{{ fcm }}</p>
+    <a href="{{ path('user_new')}}" class="btn btn-primary">New</a>
     {% for user in users %}
-        <h1>{{ user.name}}</h1>
-        <p>{{ user.email }}</p>
-        <p>{{ user.password }}</p>
-        <p>{{ user.vma }}</p>
-        <p>{{ user.age }}</p>
-        <p>{{ user.createdAt }}</p>
-        <img src="{{user.img}}" alt="">
+    <div class="ctn-user mb-20 flex column ">
+        <div class="header-user">
+            <img src="https://randomuser.me/api/portraits/men/81.jpg" alt="">
+            <h2>{{ user.name }}</h2>
+        </div>
+        <div class="content-user">
+            <ul>
+                {# <li>Age : {{ user.age }}</li> #}
+                <li>VMA : {{ user.vma }}</li>
+                {# <li>FCM : {{ user.fcm }}</li> #}
+            </ul>
+        </div>
+    </div>
     {% endfor %}
-
-    
 </div>
-
-
-
-
-
-
-    
-
 {% endblock %}
 
 

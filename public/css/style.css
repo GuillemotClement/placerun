@@ -12,6 +12,7 @@ body{
 	font-size: 1.6rem;
 	font-family: var(--font-text);
 	min-height: 100vh;
+	background: var(--bg-light);
 }
 ul{
 	list-style: none;
@@ -29,6 +30,7 @@ a{
 	--bg-primary: #3867d6;
 	--shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 	--radius: 0.5rem;
+	--bg-light: #f5f6fa;
 }
 /* BASE */
 .btn{
@@ -71,6 +73,14 @@ a{
 .mb-10{
 	margin-bottom: 1rem;
 }
+.mb-20{
+	margin-bottom: 20px;
+}
+
+
+
+
+
 /* HEADER */
 header{
 	background: var(--bg-primary);
@@ -124,8 +134,14 @@ footer a{
 	max-width: 1200px;
 	border: 1px solid red;
 	flex: 1;
-	background: white;
-	
 }
 
-
+/* USER */
+.ctn-user{
+	background: white;
+	max-width: 400px;
+	box-shadow: var(--shadow);
+}
+.header-user{
+	display: flex;
+}

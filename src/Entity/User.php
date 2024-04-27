@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -25,11 +26,11 @@ class User
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $vma = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $age = null;
-
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $dateOfBirth = null;
 
     public function getId(): ?int
     {
@@ -84,17 +85,6 @@ class User
         return $this;
     }
 
-    public function getAge(): ?string
-    {
-        return $this->age;
-    }
-
-    public function setAge(string $age): static
-    {
-        $this->age = $age;
-
-        return $this;
-    }
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {
@@ -104,6 +94,18 @@ class User
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getDateOfBirth(): ?\DateTimeInterface
+    {
+        return $this->dateOfBirth;
+    }
+
+    public function setDateOfBirth(\DateTimeInterface $dateOfBirth): static
+    {
+        $this->dateOfBirth = $dateOfBirth;
 
         return $this;
     }
